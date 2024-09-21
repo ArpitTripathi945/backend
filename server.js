@@ -1,23 +1,35 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-
+const cors = require('cors'); // Import CORS
 const app = express();
-app.use(bodyParser.json());
+
+const corsOptions = {
+    origin: 'https://frontend-prjd.vercel.app', 
+    methods: 'GET,POST',
+    optionsSuccessStatus: 200 
+};
+
+app.use(express.json());
 app.use(cors());
 
-// POST /bfhl - Handle incoming JSON data
+const PORT = process.env.PORT || 5000;
+
+// POST Route to handle requests
 app.post('/bfhl', (req, res) => {
-    const data = req.body.data;
-    let numbers = [];
-    let alphabets = [];
+    const { data } = req.body;
+
+    if (!data || !Array.isArray(data)) {
+        return res.status(400).json({ is_success: false, message: 'Invalid input format' });
+    }
+
+    // Segregate numbers and alphabets
+    const numbers = [];
+    const alphabets = [];
     let highestAlphabet = '';
 
-    // Separate numbers and alphabets, and track highest alphabet
     data.forEach(item => {
         if (!isNaN(item)) {
             numbers.push(item);
-        } else if (typeof item === 'string' && item.match(/^[a-zA-Z]$/)) {
+        } else if (typeof item === 'string' && /^[a-zA-Z]$/.test(item)) {
             alphabets.push(item);
             if (highestAlphabet === '' || item.toLowerCase() > highestAlphabet.toLowerCase()) {
                 highestAlphabet = item;
@@ -26,27 +38,24 @@ app.post('/bfhl', (req, res) => {
     });
 
     res.json({
-        "is_success": true,
-        "user_id": "your_name_01011990",  // Modify with your details
-        "email": "your_email@college.com",
-        "roll_number": "YourRollNumber",
-        "numbers": numbers,
-        "alphabets": alphabets,
-        "highest_alphabet": highestAlphabet ? [highestAlphabet] : []
+        is_success: true,
+        user_id: "Arpit_Tripathi_15122003",
+        email: "ad3617@srmist.edu.in",
+        roll_number: "RA2111003030013",
+        numbers,
+        alphabets,
+        highest_alphabet: highestAlphabet ? [highestAlphabet] : []
     });
 });
 
-// GET /bfhl - Return hardcoded operation_code
+// GET Route to return operation code
 app.get('/bfhl', (req, res) => {
-    res.json({
-        "operation_code": 1
-    });
+    res.status(200).json({ operation_code: 1 });
 });
 
 // Start the server
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
 
 module.exports = app;
