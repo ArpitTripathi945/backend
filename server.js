@@ -16,22 +16,54 @@ app.use(cors()); // Enable CORS for all requests
 app.use(bodyParser.json({ limit: '10mb' })); // JSON parsing with file size limit
 
 // Helper function to validate base64 string and extract file info
-const validateFile = (file_b64) => {
-    if (!file_b64) return { isValid: false, mimeType: null, fileSizeKB: 0 };
-
-    try {
-        const buffer = Buffer.from(file_b64, 'base64'); // Decode the base64 string
-        const fileSizeKB = (buffer.length / 1024).toFixed(2); // File size in KB
-
-        // Check for a valid MIME type using the first few bytes (magic numbers)
-        const mimeType = mime.lookup(buffer.subarray(0, 4));
-        if (!mimeType) return { isValid: false, mimeType: null, fileSizeKB };
-
-        return { isValid: true, mimeType, fileSizeKB };
-    } catch (err) {
-        return { isValid: false, mimeType: null, fileSizeKB: 0 };
+const validateFile = (fileB64) => {
+    if (!fileB64) {
+        return {
+            file_valid: false,
+            file_mime_type: null,
+            file_size_kb: null
+        };
     }
+
+    // Decode the base64 string and validate
+    const buffer = Buffer.from(fileB64, 'base64');
+    const fileSizeKB = buffer.length / 1024; // Size in KB
+    let mimeType = '';
+
+    // MIME type detection (simplified for example)
+    if (fileB64.startsWith('/9j')) {
+        mimeType = 'image/jpeg';
+    } else if (fileB64.startsWith('iVBORw0KGgo')) {
+        mimeType = 'image/png';
+    } else if (fileB64.startsWith('JVBERi0xLj')) {
+        mimeType = 'application/pdf';
+    } else {
+        mimeType = 'unknown';
+    }
+
+    return {
+        file_valid: mimeType !== 'unknown',
+        file_mime_type: mimeType,
+        file_size_kb: fileSizeKB.toFixed(2)
+    };
 };
+
+// const validateFile = (file_b64) => {
+//     if (!file_b64) return { isValid: false, mimeType: null, fileSizeKB: 0 };
+
+//     try {
+//         const buffer = Buffer.from(file_b64, 'base64'); // Decode the base64 string
+//         const fileSizeKB = (buffer.length / 1024).toFixed(2); // File size in KB
+
+//         // Check for a valid MIME type using the first few bytes (magic numbers)
+//         const mimeType = mime.lookup(buffer.subarray(0, 4));
+//         if (!mimeType) return { isValid: false, mimeType: null, fileSizeKB };
+
+//         return { isValid: true, mimeType, fileSizeKB };
+//     } catch (err) {
+//         return { isValid: false, mimeType: null, fileSizeKB: 0 };
+//     }
+// };
 
 // POST /bfhl - This is where JSON input is processed
 app.post('/bfhl', (req, res) => {
@@ -62,6 +94,23 @@ app.post('/bfhl', (req, res) => {
             "file_mime_type": mimeType || "unknown",
             "file_size_kb": fileSizeKB
         };
+        const response2 = {
+            "is_success": true,
+            "user_id": "Arpit_Tripathi", // Example user_id
+            "email": "ad3617@srmist.edu.in",
+            "roll_number": "RA2111003030013",
+            "numbers": numbers,
+            "alphabets": alphabets,
+            "highest_lowercase_alphabet": highestLowercase ? [highestLowercase] : [],
+            "file_valid": false
+        }
+    
+        if(!file_b64){
+            res.json(response2);
+        }else{
+            res.json(response);
+        }
+    
 
         res.status(200).json(response);
     } catch (error) {
