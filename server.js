@@ -44,9 +44,9 @@ app.post('/bfhl', upload.single('file'), (req, res) => {
 
         const response = {
             "is_success": true,
-            "user_id": "your_name_22091999",
-            "email": "your_email@example.com",
-            "roll_number": "SRM123",
+            "user_id": "Arpit_Tripathi_15122003",
+            "email": "ad3617@srmist.edu.in",
+            "roll_number": "RA2111003030013",
             "numbers": numbers,
             "alphabets": alphabets,
             "highest_lowercase_alphabet": highestLowercase ? [highestLowercase] : [],
@@ -56,7 +56,7 @@ app.post('/bfhl', upload.single('file'), (req, res) => {
         };
         const response2 = {
             "is_success": true,
-            "user_id": "Arpit_Tripathi_RA2111003030013", // Example user_id
+            "user_id": "Arpit_Tripathi_15122003", // Example user_id
             "email": "ad3617@srmist.edu.in",
             "roll_number": "RA2111003030013",
             "numbers": numbers,
