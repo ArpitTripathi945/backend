@@ -16,7 +16,7 @@ const validateFile = (file_b64) => {
         const fileSizeKB = (buffer.length / 1024).toFixed(2); // File size in KB
 
         // Check for a valid MIME type using the first few bytes (magic numbers)
-        const mimeType = mime.lookup(buffer.slice(0, 4));
+        const mimeType = mime.lookup(buffer.subarray(0, 4));
         if (!mimeType) return { isValid: false, mimeType: null, fileSizeKB };
 
         return { isValid: true, mimeType, fileSizeKB };
