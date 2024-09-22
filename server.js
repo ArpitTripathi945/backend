@@ -3,6 +3,13 @@ const bodyParser = require('body-parser');
 const mime = require('mime-types'); // Import mime-types to detect MIME type
 
 const app = express();
+
+const corsOptions = {
+    origin: 'https://frontend-prjd.vercel.app/', // Replace with your frontend URL in production
+    methods: 'GET,POST',
+    optionsSuccessStatus: 200 // For older browsers
+};
+app.use(cors)
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json({ limit: '10mb' })); // Increased limit for file size
